@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoInvest - Sustainable Investments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="#" class="logo">EcoInvest</a>
+        <nav class="navbar">
+            <a href="#home" class="active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#recommendations">Recommendations</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#resources">Resources</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="home">
+        <div class="home-content">
+            <h1>Welcome to EcoInvest</h1>
+            <p>Invest in a sustainable future with EcoInvest. Our platform helps you make informed investment decisions based on environmental, social, and governance (ESG) criteria. Discover opportunities that align with your values and contribute to a greener planet.</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="feature">
+                <h3>ESG Scores</h3>
+                <p>Get detailed insights into the environmental, social, and governance scores of various investments.</p>
+            </div>
+            <div class="feature">
+                <h3>Investment Recommendations</h3>
+                <p>Receive personalized investment recommendations based on your preferences and risk tolerance.</p>
+            </div>
+            <div class="feature">
+                <h3>Portfolio Management</h3>
+                <p>Manage and track your investments with our easy-to-use portfolio management tools.</p>
+            </div>
+            <div class="feature">
+                <h3>Educational Resources</h3>
+                <p>Access resources to learn more about sustainable investing and ESG factors.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommendations Section -->
+    <section id="recommendations" class="recommendations">
+        <div class="container">
+            <h2>Recommendations</h2>
+            <form id="sector-form">
+                <label for="sector">Select a sector:</label>
+                <select id="sector" name="sector">
+                    <option value="solar energy">Solar Energy</option>
+                    <option value="wind energy">Wind Energy</option>
+                    <option value="eco-tourism">Eco-Tourism</option>
+                    <option value="sustainable agriculture">Sustainable Agriculture</option>
+                    <option value="biofuel">Biofuel</option>
+                    <option value="forest conservation">Forest Conservation</option>
+                </select>
+                <button type="submit">Get Recommendations</button>
+            </form>
+            <div id="recommendations-results">
+                <!-- Recommendations will be displayed here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2>Portfolio Management</h2>
+            <p>Keep track of your investments and analyze your portfolio's performance. Make adjustments as needed to align with your financial goals and values.</p>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources" class="resources">
+        <div class="container">
+            <h2>Educational Resources</h2>
+            <p>Enhance your understanding of sustainable investing with our curated resources. Learn about the impact of ESG factors and how they influence investment decisions.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <p>If you have any questions or need assistance, feel free to reach out to us. We're here to help!</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 EcoInvest. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        document.getElementById('sector-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const sector = document.getElementById('sector').value;
+
+            fetch('/recommendations_by_sector', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ sector: sector })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('recommendations-results');
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    resultsDiv.innerHTML = '<h3>Recommended States:</h3><ul>';
+                    data.forEach(item => {
+                        resultsDiv.innerHTML += `<li>${item.State}: ${item['Combined ESI']}</li>`;
+                    });
+                    resultsDiv.innerHTML += '</ul>';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
